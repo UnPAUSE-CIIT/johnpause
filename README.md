@@ -9,6 +9,10 @@ A super duper simple Discord bot for our game development org.
 - keep the bot small and focused! no databases, no web servers, no background jobs unless absolutely necessary.
 - one cog per feature area = copy `cogs/intro.py` as a starting point.
 
+## Contributing
+
+This project is open source. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute via Issues and PRs - @zsfer reviews every pull request.
+
 ## Notes for officers
 
 - The code is deliberately simple Python. If you can read `cogs/intro.py` top to bottom, you can extend it.
