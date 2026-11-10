@@ -1,4 +1,4 @@
-# Secrets - never commit the real .env
+# never commit the real .env!!!!!!!!!
 .env
 
 # Virtual environments
