@@ -32,3 +32,4 @@ def _required_int(name: str) -> int:
 DISCORD_TOKEN = _required("DISCORD_TOK")
 SRV_ID = _required_int("SRV_ID")
 INTRO_CHNL = _required_int("INTRO_CHNL")
+AUDIT_CHNL = _required_int("AUDIT_CHNL")

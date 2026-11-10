@@ -4,6 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from audit import send_audit
 from config import INTRO_CHNL
 
 
@@ -26,9 +27,11 @@ class Intro(commands.Cog):
     )
     @app_commands.checks.has_permissions(manage_nicknames=True)
     async def check_users_in_intro(self, interaction: discord.Interaction):
+        user = interaction.user
         chnl = interaction.guild.get_channel(INTRO_CHNL)
         if chnl is None:
             await interaction.response.send_message("#intro channel not found.", ephemeral=True)
+            await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> failed: #intro channel not found")
             return
 
         async for m in chnl.history(limit=1):
@@ -36,14 +39,17 @@ class Intro(commands.Cog):
                 await interaction.response.send_message(
                     "Latest message in #intro is from a bot; nothing to do.", ephemeral=True
                 )
+                await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> no-op: latest message is from a bot")
                 return
             await m.author.edit(nick=m.content)
             msg = f"Set {m.author}'s nick to `{m.content}`"
             await interaction.response.send_message(msg, ephemeral=True)
             print(msg)
+            await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> set {m.author}'s nick to `{m.content}`")
             return
 
         await interaction.response.send_message("#intro is empty.", ephemeral=True)
+        await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> failed: #intro is empty")
 
 
 async def setup(bot: commands.Bot):

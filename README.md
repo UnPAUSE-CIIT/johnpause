@@ -37,6 +37,7 @@ This project is open source. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to c
    | `DISCORD_TOK` | Bot token from the Discord developer portal. ask seifer           |
    | `SRV_ID`      | ID of your server (guild). ask seifer                             |
    | `INTRO_CHNL`  | ID of the #intro channel, used to update new usersname            |
+   | `AUDIT_CHNL`  | ID of the channel where command audit logs are posted              |
 
    The bot exits with a clear error at startup if any of these are missing or invalid.
 
@@ -50,6 +51,7 @@ This project is open source. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to c
 
 - `app.py` - entry point: creates the bot, loads cogs, runs it
 - `config.py` - environment loading and validation
+- `audit.py` - posts command audit logs to `AUDIT_CHNL`
 - `cogs/intro.py` - intro channel nickname sync (listener + `/checkusersinintro`)
 - `.env.example` - template for required environment variables
 - `requirements.txt` - Python dependencies

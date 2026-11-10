@@ -30,6 +30,7 @@ Thanks for wanting to help! This is an open source project for our game developm
 
 - `app.py` - entry point: creates the bot, loads cogs, runs it
 - `config.py` - environment loading and validation
+- `audit.py` - posts command audit logs to `AUDIT_CHNL`
 - `cogs/` - one cog per feature; copy `cogs/intro.py` as a starting point
 - `.env.example` - template for the required environment variables
 
@@ -37,6 +38,7 @@ Thanks for wanting to help! This is an open source project for our game developm
 
 1. Create `cogs/myfeature.py` with a `commands.Cog` subclass and an `async def setup(bot)` function.
 2. Add `await self.load_extension("cogs.myfeature")` in `JohnPauseBot.setup_hook` in `app.py`.
+3. Every command must call `send_audit` from `audit.py` to log who ran it and what happened. Command errors are audit logged automatically by the global error handler in `app.py`.
 
 ## Style notes
 
