@@ -35,30 +35,35 @@ class Intro(commands.Cog):
         chnl = interaction.guild.get_channel(INTRO_CHNL)
         if chnl is None:
             await interaction.response.send_message("#intro channel not found.", ephemeral=True)
-            await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> failed: #intro channel not found")
+            await send_audit(self.bot, f"{user} ran `/sync_nicknames` -> failed: #intro channel not found")
             return
 
-        async for m in chnl.history(limit=count): # type: ignore
-            await self.__update_nick(interaction, m)
+        ok_count = 0
+        async for m in chnl.history(limit=count):
+            ok = await self._update_nick(user, m)
+            if ok:
+                ok_count += 1
 
-    async def __update_nick(self, interaction: discord.Interaction, m: discord.Message):
-        user = interaction.user
+        await interaction.response.send_message(f"Updated {ok_count} usernames :P", ephemeral=True)
+
+    async def _update_nick(self, user: discord.abc.User, m: discord.Message) -> bool:
         if m.author.bot:
-            await interaction.response.send_message(
-                "Latest message in #intro is from a bot; nothing to do.", ephemeral=True
-            )
-            await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> no-op: latest message is from a bot")
-            return
-        if not isinstance(m.author, discord.Member):
-            await interaction.response.send_message(
-                "User is not a member; nothing to do.", ephemeral=True
-            )
-            await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> no-op: user is not a member")
-            return
+            await send_audit(self.bot, f"{user} ran `/sync_nicknames` -> no-op: {m.author} is a bot")
+            return False
 
-        await m.author.edit(nick=m.content)
-        msg = f"Set {m.author}'s nick to `{m.content}`"
-        await interaction.response.send_message(msg, ephemeral=True)
-        await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> set {m.author}'s nick to `{m.content}`")
+        member = m.author
+        if not isinstance(member, discord.Member):
+            await send_audit(self.bot, f"{user} ran `/sync_nicknames` -> no-op: {member} is not a member")
+            return FAlse
+
+        try:
+            await member.edit(nick=m.content)
+        except discord.DiscordException as e:
+            await send_audit(self.bot, f"{user} ran `/sync_nicknames` -> failed on {member}: {e}")
+            return False
+
+        await send_audit(self.bot, f"{user} ran `/sync_nicknames` -> set {member}'s nick to `{m.content}`")
+        return True
+
 
 async def setup(bot: commands.Bot): await bot.add_cog(Intro(bot))
