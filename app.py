@@ -44,8 +44,10 @@ async def on_ready():
     print(f'!! Logged in as {bot.user}')
     print(f'!! In guilds: {[(g.name, g.id) for g in bot.guilds]}')
     print(f'!! Sync target guild id from SRV_ID: {SRV_ID}')
+    guild = discord.Object(id=SRV_ID)
+    bot.tree.copy_global_to(guild=guild)
     try:
-        synced = await bot.tree.sync(guild=discord.Object(id=SRV_ID))
+        synced = await bot.tree.sync(guild=guild)
         print(f'!! Synced {len(synced)} commands to guild {SRV_ID}: {[c.name for c in synced]}')
     except discord.DiscordException as e:
         print(f'!! Guild sync FAILED: {e!r}')

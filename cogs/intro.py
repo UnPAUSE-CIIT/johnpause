@@ -38,7 +38,7 @@ class Intro(commands.Cog):
             await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> failed: #intro channel not found")
             return
 
-        async for m in chnl.history(limit=count):
+        async for m in chnl.history(limit=count): # type: ignore
             await self.__update_nick(interaction, m)
 
     async def __update_nick(self, interaction: discord.Interaction, m: discord.Message):
@@ -49,14 +49,14 @@ class Intro(commands.Cog):
             )
             await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> no-op: latest message is from a bot")
             return
-        if m.author is not discord.Member:
+        if not isinstance(m.author, discord.Member):
             await interaction.response.send_message(
                 "User is not a member; nothing to do.", ephemeral=True
             )
             await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> no-op: user is not a member")
             return
 
-        m.author.edit(nick=m.content)
+        await m.author.edit(nick=m.content)
         msg = f"Set {m.author}'s nick to `{m.content}`"
         await interaction.response.send_message(msg, ephemeral=True)
         await send_audit(self.bot, f"{user} ran `/checkusersinintro` -> set {m.author}'s nick to `{m.content}`")
