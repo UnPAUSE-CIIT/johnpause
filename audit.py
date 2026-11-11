@@ -13,4 +13,7 @@ async def send_audit(bot: discord.Client, message: str) -> None:
         except discord.DiscordException as e:
             print(f"audit log: could not fetch channel {AUDIT_CHNL}: {e}")
             return
-    await channel.send(f"📜 {message}", allowed_mentions=discord.AllowedMentions.none())
+        
+    msg = f"📜 {message}"
+    await channel.send(msg, allowed_mentions=discord.AllowedMentions.none())
+    print(msg)
