@@ -54,7 +54,7 @@ class Intro(commands.Cog):
         member = m.author
         if not isinstance(member, discord.Member):
             await send_audit(self.bot, f"{user} ran `/sync_nicknames` -> no-op: {member} is not a member")
-            return FAlse
+            return False
 
         try:
             await member.edit(nick=m.content)
