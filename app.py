@@ -28,6 +28,8 @@ class JohnPauseBot(commands.Bot):
     async def setup_hook(self):
         await self.load_extension("cogs.intro")
         self.tree.on_error = on_tree_error
+        for cmd in self.tree.walk_commands():
+            print(f'!! Registered command /{cmd.qualified_name}')
 
 
 intents = discord.Intents.default()
@@ -39,8 +41,14 @@ bot = JohnPauseBot(command_prefix="!", intents=intents)  # prefix unused; slash 
 
 @bot.event
 async def on_ready():
-    await bot.tree.sync(guild=discord.Object(id=SRV_ID))
     print(f'!! Logged in as {bot.user}')
+    print(f'!! In guilds: {[(g.name, g.id) for g in bot.guilds]}')
+    print(f'!! Sync target guild id from SRV_ID: {SRV_ID}')
+    try:
+        synced = await bot.tree.sync(guild=discord.Object(id=SRV_ID))
+        print(f'!! Synced {len(synced)} commands to guild {SRV_ID}: {[c.name for c in synced]}')
+    except discord.DiscordException as e:
+        print(f'!! Guild sync FAILED: {e!r}')
 
 
 bot.run(DISCORD_TOKEN)
